@@ -1,10 +1,13 @@
-import chrome from 'chrome-aws-lambda';
+import chrome from '@sparticuz/chrome-aws-lambda';
 import puppeteer from 'puppeteer-core';
 
 export default async (req, res) => {
   const targetUrl = req.query.url;
 
+  console.log('Received request for URL:', targetUrl);
+
   if (!targetUrl) {
+    console.log('Missing target URL');
     res.status(400).json({ error: 'Missing target URL' });
     return;
   }
@@ -12,7 +15,10 @@ export default async (req, res) => {
   try {
     const executablePath = await chrome.executablePath;
 
+    console.log('Chrome executable path:', executablePath);
+
     if (!executablePath) {
+      console.log('Chrome executable path not found');
       res.status(500).json({ error: 'Chrome executable path not found' });
       return;
     }
@@ -24,16 +30,18 @@ export default async (req, res) => {
     });
     const page = await browser.newPage();
 
+    console.log('Navigating to:', targetUrl);
     await page.goto(targetUrl, {
       waitUntil: 'networkidle2'
     });
 
-    // Strip out security headers
+    console.log('Page loaded, stripping security headers');
     await page.evaluate(() => {
       document.querySelectorAll('head > meta[http-equiv="Content-Security-Policy"]').forEach(meta => meta.remove());
     });
 
     const content = await page.content();
+    console.log('Page content length:', content.length);
     await browser.close();
 
     res.setHeader('Content-Type', 'text/html');

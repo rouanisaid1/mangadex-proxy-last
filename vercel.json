@@ -12,7 +12,7 @@
       "config": {
         "includeFiles": [
           "node_modules/puppeteer-core/**",
-          "node_modules/chrome-aws-lambda/**"
+          "node_modules/@sparticuz/chrome-aws-lambda/**"
         ]
       }
     }
