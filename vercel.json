@@ -4,5 +4,17 @@
       "source": "/proxy",
       "destination": "/api/proxy.js"
     }
+  ],
+  "builds": [
+    {
+      "src": "api/proxy.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "node_modules/puppeteer-core",
+          "node_modules/chrome-aws-lambda"
+        ]
+      }
+    }
   ]
 }

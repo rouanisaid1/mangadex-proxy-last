@@ -10,9 +10,16 @@ export default async (req, res) => {
   }
 
   try {
+    const executablePath = await chrome.executablePath;
+
+    if (!executablePath) {
+      res.status(500).json({ error: 'Chrome executable path not found' });
+      return;
+    }
+
     const browser = await puppeteer.launch({
       args: chrome.args,
-      executablePath: await chrome.executablePath,
+      executablePath,
       headless: chrome.headless,
     });
     const page = await browser.newPage();
